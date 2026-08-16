@@ -1,1 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BG3 Completion Checklist</title>
 
+  <style>
+    :root {
+      --bg: #100d16;
+      --panel: #1b1624;
+      --panel-light: #251d31;
+      --gold: #c9a85c;
+      --gold-light: #e3c878;
+      --purple: #8d6bb8;
+      --text: #eee8f5;
+      --muted: #aaa0b7;
+      --border: #3b3049;
+      --green: #70b889;
+      --danger: #b86b6b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top, #292039 0%, #100d16 45%);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 45px 20px 30px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      margin: 0;
+      color: var(--gold-light);
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(201, 168, 92, 0.25);
+    }
+
+    header p {
+      color: var(--muted);
+      margin: 10px 0 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 25px 15px 60px;
+    }
+
+    .overall {
+      background: linear-gradient(135deg, var(--panel), #211a2d);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    .overall-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .overall-title {
+      font-size: 1.25rem;
+      color: var(--gold-light);
+    }
+
+    .percentage {
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    .progress {
+      height: 10px;
+      background: #0d0a12;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--gold));
+      transition: width .3s ease;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    #search {
+      flex: 1;
+      min-width: 220px;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 15px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    #search:focus {
+      border-color: var(--gold);
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      transition: .2s;
+    }
+
+    button:hover {
+      background: var(--panel-light);
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    .act-section {
+      margin-bottom: 30px;
+    }
+
+    .act-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      background: linear-gradient(90deg, #211a2c, transparent);
+      border-left: 4px solid var(--gold);
+      padding: 15px 18px;
+      margin-bottom: 10px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .act-header h2 {
+      margin: 0;
+      color: var(--gold-light);
+      font-size: 1.5rem;
+    }
+
+    .act-progress {
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .checklist {
+      background: rgba(27, 22, 36, .75);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(59,48,73,.6);
+      transition: background .2s;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item:hover {
+      background: rgba(141,107,184,.08);
+    }
+
+    .item input {
+      appearance: none;
+      width: 21px;
+      height: 21px;
+      min-width: 21px;
+      border: 2px solid #756783;
+      border-radius: 5px;
+      cursor: pointer;
+      position: relative;
+      background: #120e18;
+    }
+
+    .item input:checked {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .item input:checked::after {
+      content: "✓";
+      position: absolute;
+      color: #101713;
+      font-size: 15px;
+      font-weight: bold;
+      left: 3px;
+      top: -1px;
+    }
+
+    .item label {
+      cursor: pointer;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .item.completed label {
+      text-decoration: line-through;
+      color: #817887;
+    }
+
+    .subsection {
+      background: #15111c;
+      color: var(--gold-light);
+      padding: 10px 15px 10px 48px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lower-city .item {
+      padding-left: 32px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      text-align: center;
+      color: #746b7d;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      padding: 20px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding-top: 30px;
+      }
+
+      .overall-top,
+      .act-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      #search {
+        width: 100%;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>⚔ BG3 Completion Checklist</h1>
+  <p>Baldur's Gate 3 — Adventure & Exploration Checklist</p>
+</header>
+
+<div class="container">
+
+  <div class="overall">
+    <div class="overall-top">
+      <div class="overall-title">Overall Progress</div>
+      <div class="percentage" id="overallPercentage">0%</div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar" id="overallBar"></div>
+    </div>
+
+    <p id="overallCount"
+       style="color:var(--muted); font-family:Arial,sans-serif; font-size:13px;">
+      0 / 0 completed
+    </p>
+  </div>
+
+  <div class="controls">
+    <input
+      id="search"
+      type="search"
+      placeholder="Search locations..."
+      oninput="filterItems()"
+    >
+
+    <button onclick="showAct('all')">All Acts</button>
+    <button onclick="showAct('1')">Act 1</button>
+    <button onclick="showAct('2')">Act 2</button>
+    <button onclick="showAct('3')">Act 3</button>
+    <button onclick="resetChecklist()">Reset Progress</button>
+  </div>
+
+
+  <!-- NAUTILOID -->
+
+  <section class="act-section" data-act="0">
+    <div class="act-header">
+      <h2>Nautiloid Ship</h2>
+      <div class="act-progress" data-progress="0">0%</div>
+    </div>
+
+    <div class="checklist">
+      <div class="item" data-name="Nautiloid Ship">
+        <input type="checkbox" id="nautiloid">
+        <label for="nautiloid">Nautiloid Ship</label>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ACT 1 -->
+
+  <section class="act-section" data-act="1">
+    <div class="act-header">
+      <h2>ACT 1</h2>
+      <div class="act-progress" data-progress="1">0%</div>
+    </div>
+
+    <div class="checklist">
+
+      <script>
+        // Act 1 data is inserted below by JavaScript.
+      </script>
+
+    </div>
+  </section>
+
+
+  <!-- ACT 2 -->
+
+  <section class="act-section" data-act="2">
+    <div class="act-header">
+      <h2>ACT 2</h2>
+      <div class="act-progress" data-progress="2">0%</div>
+    </div>
+
+    <div class="checklist"></div>
+  </section>
+
+
+  <!-- ACT 3 -->
+
+  <section class="act-section" data-act="3">
+    <div class="act-header">
+      <h2>ACT 3</h2>
+      <div class="act-progress" data-progress="3">0%</div>
+    </div>
+
+    <div class="checklist"></div>
+  </section>
+
+</div>
+
+<footer>
+  BG3 Completion Checklist • Progress is saved automatically in your browser.
+</footer>
+
+
+<script>
+
+const act1 = [
+  "Ravaged Beach",
+  "Emerald Grove",
+  "Ravaged Beach (p. 2)",
+  "Camp",
+  "Inner Sanctum",
+  "Emerald Grove (p. 2)",
+  "Forest",
+  "Blighted Village",
+  "Risen Road",
+  "Goblin Camp",
+  "Shattered Sanctum",
+  "Defiled Temple",
+  "Underdark (from Selunite Outpost)",
+  "Ebonlake Grotto",
+  "Underdark beach + Arcane Tower",
+  "Miscellaneous Act 1",
+  "Dank Crypt",
+  "Sunlit Wetlands",
+  "Blighted Village (p. 2)",
+  "Inner Sanctum (p. 2)",
+  "Camp (p. 2)",
+  "Waukeen’s Rest",
+  "Underground Passage",
+  "Arriving at Grymforge",
+  "Grymforge (getting to Ancient Forge)",
+  "Worg Pens",
+  "Risen Road (p. 2)",
+  "Zhentarim Basement",
+  "The Festering Cove",
+  "Miscellaneous Act 1 (p. 2)",
+  "Underdark (p. 2)",
+  "Secluded Cove",
+  "Grymforge (p. 1)",
+  "Sunlit Wetlands (p. 2)",
+  "Whispering Depths",
+  "Underdark (p. 3)",
+  "Owlbear Nest",
+  "Risen Road (p. 3)",
+  "Shattered Sanctum (p. 2)",
+  "Grove Raid (mandatory long rest beforehand)",
+  "Shattered Sanctum (p. 3)",
+  "Camp (p. 3) – Tiefling Party",
+  "Miscellaneous Act 1 (p. 3)",
+  "Gith Patrol (p. 1)",
+  "Grymforge (p. 2)"
+];
+
+const act2 = [
+  "Start of Act 2",
+  "Ruined Battlefield (p. 1)",
+  "Last Light Inn (p. 1)",
+  "Ruined Battlefield (p. 2)",
+  "Moonrise Towers (p. 1)",
+  "Reithwin Town (p. 1)",
+  "Reithwin Mausoleum",
+  "Last Light Inn (p. 2)",
+  "Ruined Battlefield (p. 3)",
+  "Reithwin Town (p. 2)",
+  "Rolan’s quest",
+  "Gith Patrol (p. 2) – Act 1",
+  "Moonrise Towers Prison",
+  "Moonrise Towers (p. 2)",
+  "Rosymorn Monastery Trail (p. 1)",
+  "House of Healing – Morgue",
+  "Reithwin Town (p. 3)",
+  "Moonrise Towers Prison (p. 2)",
+  "Moonrise Towers (p. 3)",
+  "Gauntlet of Shar (p. 1)",
+  "Halsin and Oliver’s quest",
+  "Creche Y’llek (p. 1)",
+  "Ruined Battlefield (p. 4)",
+  "Gauntlet of Shar (p. 2)",
+  "Overgrown Ruins – Act 1",
+  "Emerald Grove (p. 4) – Act 1",
+  "Underdark (p. 4) – Act 1",
+  "Rosymorn Monastery Trail (p. 2)",
+  "Creche Y’llek (p. 2)",
+  "Githyanki Patrol",
+  "Last Light Inn (p. 3)",
+  "Camp events",
+  "Act 2 finale preparation",
+  "Shadowfell",
+  "Moonrise Towers (p. 4)",
+  "Mindflayer Colony",
+  "Act 2 finale"
+];
+
+const act3 = [
+  "Start of Act 3",
+  "Rivington",
+  "Wyrm’s Crossing",
+  "Wyrm’s Rock Fortress",
+  "The Wyrmway",
+
+  {
+    section: "Lower City",
+    items: [
+      "Basilisk Gate Barracks",
+      "Baldur’s Mouth",
+      "Stormshore Tabernacle",
+      "Elfsong Tavern",
+      "Wine Festival/Highberrys’ Home",
+      "Forge of the Nine",
+      "Bonecloak’s Apothecary",
+      "Tara",
+      "Sorcerous Sundries",
+      "Sorcerous Vault",
+      "Stormshore Armoury",
+      "The Lodge",
+      "Elerrathin’s Home",
+      "House of Grief",
+      "The Devil’s Fee",
+      "House of Hope",
+      "Grey Harbour Docks",
+      "Water Queen’s House",
+      "Szarr Palace",
+      "Facemaker’s Boutique",
+      "Murder Tribunal",
+      "Graveyard",
+      "Lower City Sewers",
+      "Counting House",
+      "Crimson Draughts",
+      "Old Garlow’s Place",
+      "Blushing Mermaid",
+      "Temple of Bhaal",
+      "Philgrave’s Mansion",
+      "Ancient Lair",
+      "Peartree House",
+      "Bloomridge Park",
+      "Felogyr’s Fireworks",
+      "Flymm Cargo/Iron Throne",
+      "Steel Watcher Foundry",
+      "Lady Jannath’s Estate",
+      "Other buildings in the city",
+      "Camp events"
+    ]
+  },
+
+  "Morphic Pool",
+  "High Hall"
+];
+
+
+function makeId(text, act, index) {
+  return (
+    "act" +
+    act +
+    "_" +
+    index +
+    "_" +
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+  );
+}
+
+
+function addItems(actNumber, data) {
+
+  const section = document.querySelector(
+    `.act-section[data-act="${actNumber}"] .checklist`
+  );
+
+  data.forEach((entry, index) => {
+
+    if (typeof entry === "object") {
+
+      const heading = document.createElement("div");
+      heading.className = "subsection";
+      heading.textContent = entry.section;
+      section.appendChild(heading);
+
+      entry.items.forEach((item, subIndex) => {
+        addCheckbox(
+          section,
+          item,
+          actNumber,
+          `${index}_${subIndex}`
+        );
+      });
+
+    } else {
+
+      addCheckbox(
+        section,
+        entry,
+        actNumber,
+        index
+      );
+
+    }
+
+  });
+}
+
+
+function addCheckbox(container, text, act, index) {
+
+  const id = makeId(text, act, index);
+
+  const div = document.createElement("div");
+  div.className = "item";
+  div.dataset.name = text.toLowerCase();
+
+  div.innerHTML = `
+    <input
+      type="checkbox"
+      id="${id}"
+      data-id="${id}"
+      onchange="saveProgress('${id}')"
+    >
+
+    <label for="${id}">
+      ${text}
+    </label>
+  `;
+
+  container.appendChild(div);
+}
+
+
+// Generate all checklist items
+addItems(1, act1);
+addItems(2, act2);
+addItems(3, act3);
+
+
+// Nautiloid checkbox
+document
+  .getElementById("nautiloid")
+  .addEventListener("change", function() {
+    saveProgress("nautiloid");
+    updateProgress();
+  });
+
+
+// Load saved progress
+function loadProgress() {
+
+  const saved = JSON.parse(
+    localStorage.getItem("bg3Checklist") || "{}"
+  );
+
+  document
+    .querySelectorAll('input[type="checkbox"]')
+    .forEach(box => {
+
+      if (saved[box.id]) {
+        box.checked = true;
+        box.closest(".item")?.classList.add("completed");
+      }
+
+    });
+
+  updateProgress();
+}
+
+
+// Save checkbox
+function saveProgress(id) {
+
+  const saved = JSON.parse(
+    localStorage.getItem("bg3Checklist") || "{}"
+  );
+
+  const box = document.getElementById(id);
+
+  if (box.checked) {
+    saved[id] = true;
+    box.closest(".item")?.classList.add("completed");
+  } else {
+    delete saved[id];
+    box.closest(".item")?.classList.remove("completed");
+  }
+
+  localStorage.setItem(
+    "bg3Checklist",
+    JSON.stringify(saved)
+  );
+
+  updateProgress();
+}
+
+
+// Update all progress bars
+function updateProgress() {
+
+  const all = [
+    ...document.querySelectorAll('input[type="checkbox"]')
+  ];
+
+  const completed = all.filter(box => box.checked).length;
+
+  const total = all.length;
+
+  const percent =
+    total === 0
+      ? 0
+      : Math.round((completed / total) * 100);
+
+  document.getElementById("overallPercentage")
+    .textContent = percent + "%";
+
+  document.getElementById("overallBar")
+    .style.width = percent + "%";
+
+  document.getElementById("overallCount")
+    .textContent = `${completed} / ${total} completed`;
+
+
+  // Act progress
+  [0, 1, 2, 3].forEach(act => {
+
+    const section =
+      document.querySelector(`.act-section[data-act="${act}"]`);
+
+    if (!section) return;
+
+    const boxes =
+      section.querySelectorAll('input[type="checkbox"]');
+
+    const done =
+      [...boxes].filter(box => box.checked).length;
+
+    const percentage =
+      boxes.length === 0
+        ? 0
+        : Math.round((done / boxes.length) * 100);
+
+    const display =
+      section.querySelector("[data-progress]");
+
+    if (display) {
+      display.textContent =
+        `${percentage}% • ${done}/${boxes.length}`;
+    }
+
+  });
+}
+
+
+// Search
+function filterItems() {
+
+  const query =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
+
+  document
+    .querySelectorAll(".item")
+    .forEach(item => {
+
+      const name =
+        item.dataset.name || "";
+
+      if (!query || name.includes(query)) {
+        item.classList.remove("hidden");
+      } else {
+        item.classList.add("hidden");
+      }
+
+    });
+
+}
+
+
+// Act filter
+function showAct(act) {
+
+  document
+    .querySelectorAll(".act-section")
+    .forEach(section => {
+
+      if (act === "all") {
+        section.classList.remove("hidden");
+      } else if (
+        section.dataset.act === act
+      ) {
+        section.classList.remove("hidden");
+      } else {
+        section.classList.add("hidden");
+      }
+
+    });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+// Reset
+function resetChecklist() {
+
+  const confirmed =
+    confirm(
+      "Are you sure you want to reset ALL your BG3 checklist progress?"
+    );
+
+  if (!confirmed) return;
+
+  localStorage.removeItem("bg3Checklist");
+
+  document
+    .querySelectorAll('input[type="checkbox"]')
+    .forEach(box => {
+      box.checked = false;
+      box.closest(".item")?.classList.remove("completed");
+    });
+
+  updateProgress();
+}
+
+
+// Initial load
+loadProgress();
+
+</script>
+
+</body>
+</html>
